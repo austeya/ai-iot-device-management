@@ -1,0 +1,16 @@
+
+# Local env & caches
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Local data & DBs
+data/
+*.db
+
+# Model artifacts
+*.pkl
+*.joblib
+
+# Editor
+.vscode/

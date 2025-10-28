@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  broker:
+    image: eclipse-mosquitto:2
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: iot-dashboard
+    command: ["python", "dashboard/app.py"]
+    environment:
+      - MQTT_BROKER=broker
+      - IOT_TOPIC=iot/devices/sensor
+      - DB_PATH=/app/data/iot.db
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - broker
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
+  simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: iot-simulator
+    command: ["python", "src/device_simulator.py"]
+    environment:
+      - MQTT_BROKER=broker
+      - IOT_TOPIC=iot/devices/sensor
+      - DEVICES=device-001,device-002
+    depends_on:
+      - broker
+    restart: unless-stopped
