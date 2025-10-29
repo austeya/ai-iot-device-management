@@ -3,14 +3,10 @@
 .venv/
 __pycache__/
 .pytest_cache/
+.vscode/
+*.log
 
-# Local data & DBs
+# local data only
 data/
 *.db
-
-# Model artifacts
 *.pkl
-*.joblib
-
-# Editor
-.vscode/

@@ -4,15 +4,16 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
+ENV PYTHONPATH=/app
 
-# System deps (no ATLAS on bookworm)
+# Use OpenBLAS on Debian trixie (ATLAS is gone)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential gcc g++ libopenblas-dev liblapack-dev \
+    build-essential python3-dev gfortran libopenblas-dev \
  && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# bring in code
+# bring your code
 COPY src ./src
 COPY dashboard ./dashboard
