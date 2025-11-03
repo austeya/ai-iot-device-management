@@ -42,7 +42,7 @@ jobs:
           path: pytest-results.xml
 
   docker:
-    name: Build & (optionally) push Docker images
+    name: Build & push Docker images
     needs: test
     runs-on: ubuntu-latest
     permissions:
@@ -70,7 +70,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Dashboard
+      # Dashboard image
       - name: Build dashboard (no push on PRs)
         uses: docker/build-push-action@v6
         with:
@@ -84,7 +84,7 @@ jobs:
             ${{ env.IMAGE_DASHBOARD }}:${{ env.TAG_LATEST }}
             ${{ env.IMAGE_DASHBOARD }}:${{ env.TAG_SHA }}
 
-      # Simulator
+      # Simulator image
       - name: Build simulator (no push on PRs)
         uses: docker/build-push-action@v6
         with:
@@ -97,3 +97,28 @@ jobs:
           tags: |
             ${{ env.IMAGE_SIMULATOR }}:${{ env.TAG_LATEST }}
             ${{ env.IMAGE_SIMULATOR }}:${{ env.TAG_SHA }}
+
+  deploy:
+    name: Deploy to AWS ECS
+    needs: docker
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'   # deploy only on pushes to main, not PRs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # This step assumes you already have an ECS service that pulls from Docker Hub
+      # and you just want to force it to redeploy with the new :latest image.
+      - name: Force new deployment
+        run: |
+          aws ecs update-service \
+            --cluster ai-iot-cluster \
+            --service ai-iot-dashboard \
+            --force-new-deployment
