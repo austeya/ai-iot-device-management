@@ -70,8 +70,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Dashboard image
-      - name: Build dashboard (no push on PRs)
+      - name: Build dashboard
         uses: docker/build-push-action@v6
         with:
           context: ./dashboard
@@ -84,8 +83,7 @@ jobs:
             ${{ env.IMAGE_DASHBOARD }}:${{ env.TAG_LATEST }}
             ${{ env.IMAGE_DASHBOARD }}:${{ env.TAG_SHA }}
 
-      # Simulator image
-      - name: Build simulator (no push on PRs)
+      - name: Build simulator
         uses: docker/build-push-action@v6
         with:
           context: ./simulator
@@ -102,7 +100,7 @@ jobs:
     name: Deploy to AWS ECS
     needs: docker
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'   # deploy only on pushes to main, not PRs
+    if: github.event_name == 'push'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -112,13 +110,12 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}   # you set this to us-east-1
 
-      # This step assumes you already have an ECS service that pulls from Docker Hub
-      # and you just want to force it to redeploy with the new :latest image.
-      - name: Force new deployment
+      - name: Force new ECS deployment
         run: |
           aws ecs update-service \
             --cluster ai-iot-cluster \
             --service ai-iot-dashboard \
             --force-new-deployment
+
