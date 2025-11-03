@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /app
 ENV PYTHONPATH=/app
 
-# Use OpenBLAS on Debian trixie (ATLAS is gone)
+# Debian “trixie” uses OpenBLAS instead of ATLAS
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential python3-dev gfortran libopenblas-dev \
  && rm -rf /var/lib/apt/lists/*
@@ -14,6 +14,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# bring your code
 COPY src ./src
 COPY dashboard ./dashboard

@@ -1,0 +1,105 @@
+{
+    "tasks": [
+        {
+            "attachments": [
+                {
+                    "id": "f80e77bb-ad5e-4229-8c03-7cf5acbdfc7f",
+                    "type": "ElasticNetworkInterface",
+                    "status": "DELETED",
+                    "details": [
+                        {
+                            "name": "subnetId",
+                            "value": "subnet-0daf7249d268847ea"
+                        },
+                        {
+                            "name": "networkInterfaceId",
+                            "value": "eni-03560fd208383db5d"
+                        },
+                        {
+                            "name": "macAddress",
+                            "value": "06:ef:3a:ca:2e:dd"
+                        },
+                        {
+                            "name": "privateDnsName",
+                            "value": "ip-10-20-2-117.eu-central-1.compute.internal"
+                        },
+                        {
+                            "name": "privateIPv4Address",
+                            "value": "10.20.2.117"
+                        }
+                    ]
+                }
+            ],
+            "attributes": [
+                {
+                    "name": "ecs.cpu-architecture",
+                    "value": "x86_64"
+                }
+            ],
+            "availabilityZone": "eu-central-1b",
+            "clusterArn": "arn:aws:ecs:eu-central-1:019292670370:cluster/ai-iot-cluster",
+            "connectivity": "CONNECTED",
+            "connectivityAt": "2025-11-03T15:32:25.649000+03:00",
+            "containers": [
+                {
+                    "containerArn": "arn:aws:ecs:eu-central-1:019292670370:container/ai-iot-cluster/6fc04c322e334095a2dab14c4547e174/fccb9d86-6de2-460c-a4e9-d4c852542a69",
+                    "taskArn": "arn:aws:ecs:eu-central-1:019292670370:task/ai-iot-cluster/6fc04c322e334095a2dab14c4547e174",
+                    "name": "simulator",
+                    "image": "019292670370.dkr.ecr.eu-central-1.amazonaws.com/ai-iot-simulator:latest",
+                    "imageDigest": "sha256:e481eea70a95ee80177a30e4f9c6b22155329b0432e6c11a59453f491f03bbf8",
+                    "runtimeId": "6fc04c322e334095a2dab14c4547e174-3261824269",
+                    "lastStatus": "STOPPED",
+                    "exitCode": 1,
+                    "networkBindings": [],
+                    "networkInterfaces": [
+                        {
+                            "attachmentId": "f80e77bb-ad5e-4229-8c03-7cf5acbdfc7f",
+                            "privateIpv4Address": "10.20.2.117"
+                        }
+                    ],
+                    "healthStatus": "UNKNOWN",
+                    "cpu": "0"
+                }
+            ],
+            "cpu": "256",
+            "createdAt": "2025-11-03T15:32:20.717000+03:00",
+            "desiredStatus": "STOPPED",
+            "enableExecuteCommand": false,
+            "executionStoppedAt": "2025-11-03T15:32:44.710000+03:00",
+            "group": "service:ai-iot-simulator",
+            "healthStatus": "UNKNOWN",
+            "lastStatus": "STOPPED",
+            "launchType": "FARGATE",
+            "memory": "512",
+            "overrides": {
+                "containerOverrides": [
+                    {
+                        "name": "simulator"
+                    }
+                ],
+                "inferenceAcceleratorOverrides": []
+            },
+            "platformVersion": "1.4.0",
+            "platformFamily": "Linux",
+            "pullStartedAt": "2025-11-03T15:32:33.325000+03:00",
+            "pullStoppedAt": "2025-11-03T15:32:43.589000+03:00",
+            "startedAt": "2025-11-03T15:32:44.259000+03:00",
+            "startedBy": "ecs-svc/1600810685508615413",
+            "stopCode": "EssentialContainerExited",
+            "stoppedAt": "2025-11-03T15:33:07.793000+03:00",
+            "stoppedReason": "Essential container in task exited",
+            "stoppingAt": "2025-11-03T15:32:54.750000+03:00",
+            "tags": [],
+            "taskArn": "arn:aws:ecs:eu-central-1:019292670370:task/ai-iot-cluster/6fc04c322e334095a2dab14c4547e174",
+            "taskDefinitionArn": "arn:aws:ecs:eu-central-1:019292670370:task-definition/ai-iot-simulator:1",
+            "version": 6,
+            "ephemeralStorage": {
+                "sizeInGiB": 20
+            },
+            "fargateEphemeralStorage": {
+                "sizeInGiB": 20
+            }
+        }
+    ],
+    "failures": []
+}

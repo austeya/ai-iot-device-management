@@ -1,0 +1,14 @@
+metrics: true
+
+endpoints:
+  - name: dashboard-health
+    url: "http://dashboard:5000/healthz"
+    interval: 15s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: dashboard-home
+    url: "http://dashboard:5000/"
+    interval: 30s
+    conditions:
+      - "[STATUS] < 500"

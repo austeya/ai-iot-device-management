@@ -15,10 +15,13 @@ services:
     container_name: iot-dashboard
     command: ["python", "dashboard/app.py"]
     environment:
-      - MQTT_BROKER=broker
-      - IOT_TOPIC=iot/devices/sensor
-      - DB_PATH=/app/data/iot.db
-      - PYTHONPATH=/app
+      MQTT_BROKER: broker
+      IOT_TOPIC: iot/devices/sensor
+      DB_PATH: /app/data/iot.db
+      PYTHONPATH: /app
+      ADMIN_USER: admin
+      ADMIN_PASSWORD: "admin123"   # quote if special chars
+      AUTH_DISABLE: "0"
     volumes:
       - ./data:/app/data
     depends_on:
@@ -34,9 +37,20 @@ services:
     container_name: iot-simulator
     command: ["python", "src/device_simulator.py"]
     environment:
-      - MQTT_BROKER=broker
-      - IOT_TOPIC=iot/devices/sensor
-      - DEVICES=device-001,device-002
+      MQTT_BROKER: broker
+      IOT_TOPIC: iot/devices/sensor
+      DEVICES: "device-001,device-002"
     depends_on:
       - broker
+    restart: unless-stopped
+
+  gatus:
+    image: twinproduction/gatus:latest
+    container_name: gatus
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./gatus:/config:ro
+    depends_on:
+      - dashboard
     restart: unless-stopped
