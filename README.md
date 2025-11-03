@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/austeya/ai-iot-device-management/actions/workflows/ci-cd.yml/badge.svg)
 
-An end-to-end IoT demo: MQTT device simulator → anomaly detection → Flask dashboard with live charts and history.
+The AI-Powered IoT Device Management System is a cloud-based platform designed to simulate, monitor, and intelligently manage Internet of Things (IoT) devices using DevOps principles and artificial intelligence. The system enables real-time device data collection, processing, and anomaly detection to improve operational efficiency and reliability.
 
 ---
 
@@ -17,105 +17,47 @@ An end-to-end IoT demo: MQTT device simulator → anomaly detection → Flask da
 
 ---
 
-## 🧩 Architecture
+## ⚙️ Architecture
+┌────────────┐ MQTT ┌─────────────┐
+│ Simulated │ publish JSON → │ Mosquitto │
+│ IoT Devices│ │ Broker │
+└─────┬──────┘ └─────┬───────┘
+│ │
+│ subscribe │
+▼ ▼
+┌─────────────┐ AI + Storage ┌──────────────┐
+│ Flask App │◄────────────────▶│ SQLite DB │
+│ (Dashboard) │ └──────────────┘
+└─────────────┘
 
-[Simulated Devices] --MQTT--> [Mosquitto Broker] --HTTP--> [Flask Dashboard]
-| |
-+-------------------------+
-/api/latest
-/api/history?limit=100
 
-yaml
-Copy code
+### Data Flow
+1. `device_simulator.py` publishes temperature + humidity data for multiple devices.  
+2. Mosquitto broker forwards messages to the Flask dashboard subscriber.  
+3. `app.py` receives payloads, runs `AIModel.predict()`, and stores data in SQLite.  
+4. Dashboard displays:
+   - Current device readings  
+   - Real-time temperature & humidity charts  
+   - Anomaly indicators (green/red background)  
 
 ---
 
-## ⚙️ Quick Start (Docker Compose)
+## 🧩 Technologies
 
+| Component | Tool / Library |
+|------------|----------------|
+| **Language** | Python 3.11 |
+| **Frameworks** | Flask, scikit-learn, paho-mqtt |
+| **Storage** | SQLite |
+| **Containerization** | Docker & Docker Compose |
+| **Visualization** | HTML, CSS, JavaScript (Charts) |
+| **ML Model** | Isolation Forest for anomaly detection |
+
+---
+
+## 🚀 Setup & Run Instructions
+
+### 1️⃣ Clone and open project
 ```bash
-docker compose up --build
-Services
-mqtt-broker – Eclipse Mosquitto at localhost:1883
-
-dashboard – Flask UI at http://localhost:5000
-
-simulator – publishes to topic iot/devices/sensor
-
-Key environment variables (see docker-compose.yml)
-ini
-Copy code
-MQTT_BROKER=broker
-IOT_TOPIC=iot/devices/sensor
-DEVICES=device-001,device-002
-🔗 API Endpoints
-Endpoint	Description
-/	Dashboard UI
-/api/latest	Last message + anomaly flag
-/api/history?limit=100	Recent messages (newest first)
-
-Example JSON output
-json
-Copy code
-{
-  "_ts": "2025-10-22 14:37:46",
-  "device_id": "device-001",
-  "temperature": 43.26,
-  "humidity": 50.01,
-  "is_anomaly": true,
-  "timestamp": "2025-10-22 14:37:46"
-}
-🧪 Local Development
-bash
-Copy code
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-pytest -q
-Run the dashboard locally
-bash
-Copy code
-export MQTT_BROKER=localhost
-export IOT_TOPIC=iot/devices/sensor
-python dashboard/app.py
-# open http://localhost:5000
-✅ Tests
-bash
-Copy code
-pytest -q
-⚡ CI / CD
-CI runs on every push to main: installs dependencies, runs tests, builds image.
-
-CD (optional) pushes Docker image to Docker Hub if tests pass.
-
-To enable Docker Hub publishing
-Set these repository secrets in GitHub → Settings → Secrets → Actions:
-
-DOCKERHUB_USERNAME
-
-DOCKERHUB_TOKEN (Docker Hub access token)
-
-Image tags
-latest
-
-<git-sha>
-
-📂 Folder Structure
-bash
-Copy code
-.
-├─ dashboard/           # Flask app (UI + APIs)
-├─ src/                 # AI model, simulator, utils
-├─ tests/               # pytest tests
-├─ infra/               # optional IaC placeholders
-├─ docker-compose.yml
-├─ Dockerfile
-└─ .github/workflows/ci-cd.yml
-🪪 License
-MIT (or your preferred license)
-
-🧭 Commit your changes
-bash
-Copy code
-git add README.md
-git commit -m "Fix README formatting and structure"
-git push
+git clone https://github.com/austeya/ai-iot-device-management.git
+cd ai-iot-device-management
